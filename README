@@ -1,0 +1,22 @@
+Introduction
+=============
+
+The purpose of this code is to test which performance-related msr's are available. This is relevant especially for virtualized guest which follow different rules from native code. The idea in this code is to check which msr's are available.
+
+
+Terms
+-----
+
+msr: machine specific register. A term used with Intel processors to refer to special-purpose registers.
+ 
+
+Disclaimers
+-----------
+
+This code is written in Rust so (a) it would have good performance and (b) I would learn the language.
+
+
+References
+----------
+
+http://www.brendangregg.com/blog/2015-03-03/performance-tuning-linux-instances-on-ec2.html 
