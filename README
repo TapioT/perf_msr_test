@@ -1,13 +1,22 @@
 Introduction
 =============
 
-The purpose of this code is to test which performance-related msr's are available. This is relevant especially for virtualized guest which follow different rules from native code. The idea in this code is to check which msr's are available.
+The purpose of this code is to test which performance-related msr's are available. This is relevant especially for virtualized guest which follow different rules from native code. 
+
+The best introduction to this is in Intel Software Developer's Manuals, available as pdf for free from [2]. Section 18.15 covers the different clocks and 17.14 focuses on the Time-Stamp Counter.
+
+
+
+
 
 
 Terms
 -----
 
 msr: machine specific register. A term used with Intel processors to refer to special-purpose registers.
+
+tsc: Time Stamp Counter. A counter that in (newer processors) is monotonously increasing at a constant rate.
+
  
 
 Disclaimers
@@ -19,4 +28,5 @@ This code is written in Rust so (a) it would have good performance and (b) I wou
 References
 ----------
 
-http://www.brendangregg.com/blog/2015-03-03/performance-tuning-linux-instances-on-ec2.html 
+[1] http://www.brendangregg.com/blog/2015-03-03/performance-tuning-linux-instances-on-ec2.html
+[2] http://www.intel.com/content/www/us/en/processors/architectures-software-developer-manuals.html 
