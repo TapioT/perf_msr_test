@@ -1,0 +1,6 @@
+[package]
+name = "perf_msr_test"
+version = "0.1.0"
+authors = ["Tapio Tallgren <tapio.tallgren@gmail.com>"]
+
+[dependencies]
