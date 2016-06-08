@@ -1,0 +1,4 @@
+[root]
+name = "perf_msr_test"
+version = "0.1.0"
+
