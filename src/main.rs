@@ -1,6 +1,9 @@
 #![feature(asm)]
 #[cfg(target_arch = "x86_64")]
 
+use std::error::Error;
+use std::io::ErrorKind;
+
 fn read_tsc() -> u64 {
     let high: u32;
     let low : u32;
@@ -16,8 +19,7 @@ fn read_tsc() -> u64 {
     high_long | low_long   
 }
 
-/*
-// This does not work as such
+// This does not work as such since the rdmsr instruction can only be called from privilege level 0
 fn read_msr(m: u32) -> i64 {
     let edx: u32;
     let eax: u32;
@@ -32,7 +34,6 @@ fn read_msr(m: u32) -> i64 {
     let low = eax as i64;
     return high | low
 }
-*/
 
 fn read_cpuid(eax_c : u32) -> (u32, u32, u32, u32) {
     let eax : u32;
@@ -60,8 +61,6 @@ fn u8bytes2u64( bytes : [u8; 8]) -> u64 {
     ((bytes[7] as u64) << 56)	
 }
 
-
-
 fn read_msr2(m: u64, cpu: i32) -> Result< u64, std::io::Error> {
     use std::fs::File;
     use std::io::SeekFrom;
@@ -70,8 +69,15 @@ fn read_msr2(m: u64, cpu: i32) -> Result< u64, std::io::Error> {
     
     let msr_file_name = format!("/dev/cpu/{}/msr", cpu);
     let msr_file_path = Path::new(&msr_file_name);
-    let mut f = try!(File::open(&msr_file_path));
-    
+    let mut f = match File::open(&msr_file_path) {
+        Ok(f) => f,
+        Err(e) => {
+            if e.kind() == ErrorKind::PermissionDenied {
+                println!("This program must be run as superuser");       
+            }
+            panic!("Cannot open /dev/cpu/{}/msr. Error {}", cpu, e.description())
+        },
+    }; 
     let seek_result = try!(f.seek(SeekFrom::Start(m)));
     
     assert_eq!(m, seek_result);   
@@ -83,8 +89,6 @@ fn read_msr2(m: u64, cpu: i32) -> Result< u64, std::io::Error> {
 
 
 fn main() {
-    foo();
-    println!("Hello, world!");
     for i in 0..10 {
         println!("{} Tsc today is {}", i, read_tsc());
     }
@@ -101,6 +105,11 @@ fn test_read_tsc() {
     let b : u64 = read_tsc();
     assert!(b > a);
     assert!( b-a < 10000);
+}
+
+#[test]
+fn test_read_msr() {
+
 }
 
 #[test]
